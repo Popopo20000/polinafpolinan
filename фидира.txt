@@ -1,0 +1,131 @@
+class Zoo:
+    def __init__(self):
+        self.__animals = []
+
+    def add_animal(self, animal):
+        self.__animals.append(animal)
+        print(f"{animal.name} добавлен в зоопарк!")
+
+    def skip_hours(self, hours):
+        for _ in range(hours):
+            print(f"\nПрошёл час")
+            for animal in self.__animals:
+                animal.skip_hour()
+
+    def call_all_animals(self):
+        print("\nВсе животные подают голос")
+        for animal in self.__animals:
+            if animal.is_alive:
+                animal.make_sound()
+
+    def interact_with_animal(self):
+        alive_animals = [a for a in self.__animals if a.is_alive]
+        if not alive_animals:
+            print("Нет живых животных для взаимодействия")
+            return
+
+        print("\nВыберите животное:")
+        for i, animal in enumerate(alive_animals, 1):
+            print(f"{i}. {animal.name} (голод: {animal.hungry}, настроение: {animal.mood})")
+
+        try:
+            choice = int(input("Введите номер: ")) - 1
+            if 0 <= choice < len(alive_animals):
+                animal = alive_animals[choice]
+                print(f"\nЧто сделать с {animal.name}?")
+                print("1. Покормить")
+                print("2. Поиграть")
+                action = input("Выбор: ")
+
+                if action == "1":
+                    animal.feed()
+                elif action == "2":
+                    animal.play()
+                else:
+                    print("Неверный выбор")
+            else:
+                print("Неверный номер")
+        except ValueError:
+            print("Введите число")
+
+    def clean_zoo(self):
+        before = len(self.__animals)
+        self.__animals = [a for a in self.__animals if a.is_alive]
+        removed = before - len(self.__animals)
+        print(f"Убрано {removed} мёртвых животных из зоопарка")
+
+    def show_status(self):
+        print("\nСтатус зоопарка")
+        for animal in self.__animals:
+            status = "жив" if animal.is_alive else "мёртв"
+            print(f"{animal.name}: голод={animal.hungry}, настроение={animal.mood}, статус={status}")
+
+
+def main():
+    zoo = Zoo()
+    zoo.add_animal(Tiger("тигр"))
+    zoo.add_animal(Elephant("слоник"))
+    zoo.add_animal(Pig("свинья"))
+    zoo.add_animal(Monkey("обизяна"))
+
+    while True:
+        print("\nМЕНЮ ЗООПАРКА")
+        print("1. Пропустить N часов")
+        print("2. Позвать всех животных")
+        print("3. Взаимодействовать с животным")
+        print("4. Почистить зоопарк")
+        print("5. Показать статус")
+        print("6. Добавить животное")
+        print("0. Выход")
+
+        choice = input("Выбор: ")
+
+        if choice == "1":
+            try:
+                hours = int(input("Сколько часов пропустить? "))
+                zoo.skip_hours(hours)
+            except ValueError:
+                print("Введите число")
+
+        elif choice == "2":
+            zoo.call_all_animals()
+
+        elif choice == "3":
+            zoo.interact_with_animal()
+
+        elif choice == "4":
+            zoo.clean_zoo()
+
+        elif choice == "5":
+            zoo.show_status()
+
+        elif choice == "6":
+            print("Какое животное добавить?")
+            print("1. Тигр")
+            print("2. Слон")
+            print("3. Свинка")
+            print("4. Обезьяна")
+            animal_type = input("Выбор: ")
+
+            name = input("Имя животного: ")
+
+            if animal_type == "1":
+                zoo.add_animal(Tiger(name))
+            elif animal_type == "2":
+                zoo.add_animal(Elephant(name))
+            elif animal_type == "3":
+                zoo.add_animal(Pig(name))
+            elif animal_type == "4":
+                zoo.add_animal(Monkey(name))
+            else:
+                print("Неверный выбор")
+
+        elif choice == "0":
+            print("До свидания!")
+            break
+
+        else:
+            print("Неверный выбор")
+
+if __name__ == "__main__":
+    main()
